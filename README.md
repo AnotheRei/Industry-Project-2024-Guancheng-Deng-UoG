@@ -11,20 +11,35 @@ The ACTUS Model Demonstrations Web Application is built in a Django environment 
 To set up this project locally, follow these steps:
 
 1. **Clone the repository**:
-   ```bash
+   ```
    git clone https://github.com/YourUsername/ACTUS-Model-Demonstrations.git
+   ```
+
 2. **Navigate to the project directory, create a virtual environment, and activate it**:
+   ```
    cd ACTUS-Model-Demonstrations
-  python -m venv venv
-  # On Windows:
-  venv\Scripts\activate
-  # On macOS/Linux:
-  source venv/bin/activate
+   python -m venv venv
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
+
 3. **Install the required dependencies**:
-  pip install -r requirements.txt
+   ```
+   pip install -r requirements.txt
+   ```
+
 4. **Apply migrations**:
-  python manage.py migrate
+   ```
+   python manage.py migrate
+   ```
+
 5. **Run the development server**:
-  python manage.py runserver
+   ```
+   python manage.py runserver
+   ```
+
 6. **Access the application**:
-  Open your web browser and navigate to http://127.0.0.1:8000/ to access the web application.
+   Open your web browser and navigate to `http://127.0.0.1:8000/` to access the web application.
+
