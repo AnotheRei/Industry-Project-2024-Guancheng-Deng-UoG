@@ -1,0 +1,118 @@
+/* static/css/styles.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding-bottom: 40px;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.column {
+    flex: 0 0 45%;
+    padding: 0 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: normal;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    color: #495057;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.header {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-group button {
+    margin: 0 10px;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 60px;
+    width: 1px;
+    background: repeating-linear-gradient(
+        to bottom,
+        #ccc,
+        #ccc 5px,
+        transparent 5px,
+        transparent 10px
+    );
+    transform: translateX(-50%);
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 300px;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: left;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 0.85rem;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -150px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+}
+
+.tooltip-icon {
+    font-size: 12px;
+    color: #ced4da;
+}
+
+.tooltip-container:hover .tooltip-icon {
+    color: #0056b3;
+}

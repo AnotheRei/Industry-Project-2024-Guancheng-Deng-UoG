@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Data Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .top-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 80px;
+            margin-bottom: 10px;
+        }
+        .top-box {
+            background-color: #003366;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            width: 80%;
+            text-align: left;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .header {
+            font-size: 18px;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            width: 80%;
+            margin: 20px auto;
+            border-radius: 5px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding-bottom: 40px;
+        }
+
+        .row {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .column {
+            flex: 0 0 45%;
+            padding: 0 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            color: #495057;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            color: #495057;
+            background-color: #fff;
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .header {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn-group button {
+            margin: 0 10px;
+        }
+
+
+        .container::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 60px;
+            width: 1px;
+            background: repeating-linear-gradient(
+                to bottom,
+                #ccc,
+                #ccc 5px,
+                transparent 5px,
+                transparent 10px
+            );
+            transform: translateX(-50%);
+        }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 300px;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: left;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 0.85rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -150px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+        }
+
+        .tooltip-icon {
+            font-size: 12px;
+            color: #ced4da;
+        }
+
+        .tooltip-container:hover .tooltip-icon {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-container">
+        <div class="top-box">
+            Lease Contract
+        </div>
+    </div>
+    {% if errors %}
+        <div class="error-message">
+            {% for field, field_errors in errors.items %}
+                {% for error in field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="container mt-5">
+        <form id="financialDataForm" method="post" action="{% url 'index' %}">
+            {% csrf_token %}
+            <input type="hidden" name="form_source" value="index">
+            <div class="row">
+                <div class="column">
+                    <h3 class="header">All fields below are mandatory to fill in:</h3>
+                    <div class="form-group">
+                        <label for="id_contract_type">
+                            Contract Type
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">The ContractType is the most important information. It defines the cash flow generating pattern of a contract. The ContractType information in combination with a given state of the risk factors will produce a deterministic sequence of cash flows which are the basis of any financial analysis.</span>
+                            </div>
+                        </label>
+                        {{ form.contract_type }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_contract_identifier">
+                            Contract Identifier
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">Unique identifier of a contract. Usually a string of numbers.</span>
+                            </div>
+                        </label>
+                        {{ form.contract_identifier }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_ied">
+                            Initial Exchange Date
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">Date of the initial cash flow. Usually the date on which the contract becomes effective. Enter the date in ISO 8601 format. (e.g. 2024-01-01T00:00)</span>
+                            </div>
+                        </label>
+                        {{ form.ied }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_maturity">
+                            Maturity Date
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">Marks the contractual end of the lifecycle of a contract. Enter the date in ISO 8601 format. (e.g. 2025-01-01T00:00)</span>
+                            </div>
+                        </label>
+                        {{ form.maturity }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_cycle_of_rent_payment">
+                            Cycle of Rent Payment
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">Periodicity of rent payments. Enter the duration in ISO 8601 format, such as P1M for one month, P3M for three months, or P1Y for one year.</span>
+                            </div>
+                        </label>
+                        {{ form.cycle_of_rent_payment }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_rent">
+                            Rent
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">The amount of rent to be paid for each cycle. This should be the specific amount agreed upon for each rental period.</span>
+                            </div>
+                        </label>
+                        {{ form.rent }}
+                    </div>
+                </div>
+                <div class="column">
+                    <h3 class="header">Below are your Optional choices:</h3>
+                    <div class="form-group">
+                        <label for="id_rent_pay_date">
+                            Rent Pay Date
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">The agreed-upon date for rent payment if specified. Enter the date in ISO 8601 format. (e.g. 2024-01-10T00:00) </span>
+                            </div>
+                        </label>
+                        {{ form.rent_pay_date }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_fee_rate">
+                            Fee Rate
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">Fee is defined as a percentage of the rent. Fees include all costs of the lease contract, such as processing fees, administration fees, etc. Fees increase over time and the percentage filled in is a percentage of the monthly rent. (e.g. 0.1)</span>
+                            </div>
+                        </label>
+                        {{ form.fee_rate }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_fee_payment_date">
+                            Fee Payment Date
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">The agreed-upon date for fee payment if specified. Enter the date in ISO 8601 format. (e.g. 2024-01-10T00:00) If not filled in the data is the same as the rent.</span>
+                            </div>
+                        </label>
+                        {{ form.fee_payment_date }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_cycle_of_fee_payment">
+                            Cycle of Fee Payment
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">Periodicity of fee payments if specified. Enter the duration in ISO 8601 format, such as P1M for one month, P3M for three months, or P1Y for one year. If not filled in the period is the same as the rent.</span>
+                            </div>
+                        </label>
+                        {{ form.cycle_of_fee_payment }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_rent_scaling_rate">
+                            Rent Scaling Rate
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">Rent scaling rate is the rate to which rents are adjusted over a certain period of time. The percentage entered is the percentage by which the rent is adjusted. (e.g. 0.05 represents a 0.05 increase in rent.)</span>
+                            </div>
+                        </label>
+                        {{ form.rent_scaling_rate }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_rent_scaling_date">
+                            Rent Scaling Date
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">The agreed-upon date for rent scaling if specified. Enter the date in ISO 8601 format. (e.g. 2024-01-10T00:00)</span>
+                            </div>
+                        </label>
+                        {{ form.rent_scaling_date }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_cycle_of_rent_scaling">
+                            Cycle of Rent Scaling
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">Periodicity of rent scaling if specified. Enter the duration in ISO 8601 format, such as P1M for one month, P3M for three months, or P1Y for one year.</span>
+                            </div>
+                        </label>
+                        {{ form.cycle_of_rent_scaling }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_penalty_rate">
+                            Penalty Rate
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle tooltip-icon"></i>
+                                <span class="tooltip-text">Penalty rate is the percentage of fines imposed when a tenant has a late rent payment incident. The percentage entered is the penalty as a percentage of the rent. Not filled in indicates that there are no late payment penalties for this contract. (e.g. 0.1 indicates that the penalty is 0.1 of the rent)</span>
+                            </div>
+                        </label>
+                        {{ form.penalty_rate }}
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 d-flex justify-content-center">
+                    <button type="button" class="btn btn-secondary mr-2" onclick="resetForm()">Reset</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        window.onload = function() {
+            if (window.location.href.indexOf('returning=true') > -1) {
+                var cleanUrl = window.location.href.split('?')[0];
+                window.history.replaceState(null, null, cleanUrl);
+            }
+        }
+
+        function resetForm() {
+            var form = document.getElementById("financialDataForm");
+            var resetInput = document.createElement("input");
+            resetInput.type = "hidden";
+            resetInput.name = "reset";
+            resetInput.value = "true";
+            form.appendChild(resetInput);
+            form.submit();
+        }
+    </script>
+</body>
+</html>

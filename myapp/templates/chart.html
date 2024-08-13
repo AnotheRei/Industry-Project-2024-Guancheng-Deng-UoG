@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cashflow Chart</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .top-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 80px;
+            margin-bottom: 10px;
+        }
+        .top-box {
+            background-color: #003366;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            width: 80%;
+            text-align: left;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .center-button {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            width: 200px;
+        }
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .table-container {
+            width: 80%;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .page-footer {
+            height: 100px;
+        }
+        .small-title {
+            font-size: 24px;
+        }
+        .chart-container {
+            margin-bottom: 40px;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            width: 80%;
+            margin: 20px auto;
+            border-radius: 5px;
+        }
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 300px;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: left;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 0.85rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -150px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+        }
+
+        .tooltip-icon {
+            font-size: 12px;
+            color: #ced4da;
+        }
+
+        .tooltip-container:hover .tooltip-icon {
+            color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="top-container">
+        <div class="top-box">
+            Result: Contract ID: {{ contract_id }}
+        </div>
+    </div>
+    <div class="container mt-5 center-content">
+        <div class="chart-container">
+            <img src="data:image/png;base64,{{ chart }}" alt="Cashflow Chart" class="img-fluid">
+        </div>
+        <h2 class="small-title">Event Table</h2>
+        <div class="table-container">
+            {{ event_table|safe }}
+        </div>
+        {% if errors %}
+            <div class="error-message">
+                {% for error in errors %}
+                    {{ errors|join:"<br>" }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="post" action="{% url 'index' %}">
+            {% csrf_token %}
+            <input type="hidden" name="form_source" value="chart">
+            <!-- Hidden fields to retain form data -->
+            <input type="hidden" name="contract_type" value="{{ form.contract_type.value }}">
+            <input type="hidden" name="contract_identifier" value="{{ form.contract_identifier.value }}">
+            <input type="hidden" name="ied" value="{{ form.ied.value }}">
+            <input type="hidden" name="maturity" value="{{ form.maturity.value }}">
+            <input type="hidden" name="cycle_of_rent_payment" value="{{ form.cycle_of_rent_payment.value }}">
+            <input type="hidden" name="rent" value="{{ form.rent.value }}">
+            <input type="hidden" name="fee_rate" value="{{ form.fee_rate.value }}">
+            <input type="hidden" name="fee_payment_date" value="{{ form.fee_payment_date.value }}">
+            <input type="hidden" name="cycle_of_fee_payment" value="{{ form.cycle_of_fee_payment.value }}">
+            <input type="hidden" name="rent_scaling_rate" value="{{ form.rent_scaling_rate.value }}">
+            <input type="hidden" name="rent_scaling_date" value="{{ form.rent_scaling_date.value }}">
+            <input type="hidden" name="cycle_of_rent_scaling" value="{{ form.cycle_of_rent_scaling.value }}">
+            <input type="hidden" name="penalty_rate" value="{{ form.penalty_rate.value }}">
+
+            <div class="form-group">
+                <label for="maintenance_date">
+                    Maintenance Date
+                    <div class="tooltip-container">
+                        <i class="fas fa-info-circle tooltip-icon"></i>
+                        <span class="tooltip-text">The date for a maintenance event. Enter the date in ISO 8601 format. (e.g. 2024-01-10T00:00) Please also fill in the maintenance cost.</span>
+                    </div>
+                </label>
+                <input type="text" name="maintenance_date" value="" class="form-control" placeholder="YYYY-MM-DDTHH:MM">
+            </div>
+            <div class="form-group">
+                <label for="maintenance_cost">
+                    Maintenance Cost
+                    <div class="tooltip-container">
+                        <i class="fas fa-info-circle tooltip-icon"></i>
+                        <span class="tooltip-text">The cost of this maintenance event. Please also fill in the maintenance date.</span>
+                    </div>
+                </label>
+                <input type="number" name="maintenance_cost" value="" class="form-control">
+            </div>
+
+            {% if show_late_payment_date %}
+                <div class="form-group">
+                    <label for="late_payment_date">
+                        Late Payment Date
+                        <div class="tooltip-container">
+                            <i class="fas fa-info-circle tooltip-icon"></i>
+                            <span class="tooltip-text">The date for a late payment event. Enter the date in ISO 8601 format. (e.g. 2024-01-10T00:00)</span>
+                        </div>
+                    </label>
+                    <input type="text" name="late_payment_date" value="" class="form-control" placeholder="YYYY-MM-DDTHH:MM">
+                </div>
+            {% endif %}
+
+            <div class="center-button">
+                <a href="{% url 'index' %}?returning=true" class="btn btn-secondary">Return</a>
+                <button type="submit" name="update" class="btn btn-primary">Update</button>
+            </div>
+        </form>
+        <div class="page-footer"></div>
+    </div>
+</body>
+</html>
